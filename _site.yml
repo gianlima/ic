@@ -1,0 +1,14 @@
+name: "Gian Lima"
+output_dir: "docs"
+navbar:
+  title: "Gian Lima"
+  left:
+    - text: "Home"
+      href: https://gianlima.github.io/
+    - text: "Regressão"
+      menu:
+      - text: "Regressão Linear Simples"
+output:
+  html_document:
+    theme: flatly
+    highlight: pygments
