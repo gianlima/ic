@@ -5,6 +5,7 @@ output:
     theme: flatly
     highlight: pygments
     toc_depth: 5
+    code_folding: show
     # code_download: true
     # code_folding: show
     toc: true
@@ -55,6 +56,12 @@ df[sapply(df,is.character)] <- lapply(df[sapply(df,is.character)], as.factor)
 df$ano <- as.factor(df$ano)
 ```
 
+#### Resumo Geral
+
+```{r}
+summary(df)
+```
+
 # Entreposto
 
 **PLOTLY**
@@ -73,7 +80,7 @@ fig
 ```
 
 **GGPLOT**
-```{r}
+```{r message = F}
 ano.entreposto$Var1 <- as.numeric(levels(ano.entreposto$Var1))[ano.entreposto$Var1]
 p <- ggplot(ano.entreposto,aes(x=factor(Var1),
                           y=Freq,
@@ -150,12 +157,6 @@ y <- cbind(as.Date(row.names(x)),x)
 z <- xts(y, order.by = y$`as.Date(row.names(x))`)
 dygraph(z) %>% dyRangeSelector()
 dygraph(z, group =  "Mercado de Antonina")
-```
-
-#### Resumo Geral
-
-```{r}
-summary(df)
 ```
 
 #### Preco_r médio de cada nome_popular
@@ -249,7 +250,7 @@ ggplot(tb, aes(x = reorder(Var1, Freq), y = Freq, fill = Freq)) +
   labs(fill = "Frequência")
 ```
 
-```{r}
+```{r message = F}
 library(gganimate)
 tab <- df
 tab$ano <- as.numeric(levels(df$ano))[df$ano]

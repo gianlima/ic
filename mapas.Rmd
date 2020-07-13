@@ -5,6 +5,7 @@ output:
     theme: flatly
     highlight: pygments
     toc_depth: 5
+    code_folding: show
     # code_download: true
     # code_folding: show
     toc: true
