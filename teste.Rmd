@@ -1,16 +1,11 @@
 ---
-title: "Apriori"
 output:
-  html_document:
-    theme: cosmo
-    highlight: pygments
-    toc_depth: 5
-    #### code_download: true
-    #### code_folding: show
-    toc: true
-    toc_float:
-      collapsed: false
-    #### df_print: kable
+  knitrBootstrap::bootstrap_document:
+    title: "Test file"
+    theme: amelia
+    highlight: sunburst
+    theme.chooser: TRUE
+    highlight.chooser: TRUE
 ---
 
 ```{r setup, include=FALSE}
