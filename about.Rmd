@@ -2,7 +2,7 @@
 title: "Apriori"
 output:
   html_document:
-    theme: cosmo
+    theme: journal
     highlight: pygments
     toc_depth: 5
     #### code_download: true
