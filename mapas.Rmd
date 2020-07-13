@@ -1,0 +1,151 @@
+---
+title: "Opções de mapa"
+output:
+  html_document:
+    theme: flatly
+    highlight: pygments
+    toc_depth: 5
+    # code_download: true
+    # code_folding: show
+    toc: true
+    toc_float:
+      collapsed: false
+    # df_print: kable
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = F,
+                      message = F)
+```
+
+
+# Pacotes utilizados
+```{r}
+library(readxl)
+library(janitor)
+library(sf)
+library(raster)
+library(dplyr)
+library(spData)
+library(ggmap)
+library(gganimate)
+```
+
+# Obtenção dos dados e limpeza
+```{r}
+ds <- read_excel("Macrofauna_CEP_indices.xlsx",na = "-")
+names(ds) <- ds %>% clean_names() %>% names
+```
+
+# Gráfico estático 
+```{r}
+sbbox <- make_bbox(lon = ds$longitude, lat = ds$latitude, f = .1)
+sq_map <- get_map(location = sbbox, 
+                  maptype = "satellite", 
+                  source = "google")
+ggmap(sq_map) + 
+  geom_point(data = ds, mapping = aes(x = longitude, y = latitude, 
+                                      color = county)) + 
+  xlab("Longitude") + 
+  ylab("Latitude") + 
+  labs(color = "Local" ) + 
+  ggtitle("Mapa de coordenadas por localidade")
+
+```
+
+
+## Gráficos com diferentes relevos
+```{r}
+library(leaflet)
+dat <- data.frame(longitude = ds$longitude,
+                  latitude = ds$latitude,
+                  year = ds$year_collected)
+dat <- unique(dat)
+
+mapa1 <- leaflet() %>%
+  addTiles() %>% 
+  addMarkers(lng=dat$longitude, lat=dat$latitude)
+mapa1
+```
+
+# Separado por ano
+```{r}
+pal <-  colorNumeric("RdYlBu", domain = dat$year)
+mapa <- leaflet(dat) %>%
+  addTiles() %>%  
+  addCircles(col = ~pal(year), opacity = 0.9,
+             lng = ~longitude, lat=~latitude) %>% 
+  addLegend(pal = pal, values = ~year) 
+mapa
+```
+
+# Diferentes providers
+```{r}
+mapa %>% addProviderTiles(providers$CartoDB.Positron)
+
+mapa %>% addProviderTiles(providers$Esri.NatGeoWorldMap)
+```
+
+
+```{r}
+mapa %>% 
+  addProviderTiles(providers$Esri.WorldStreetMap) %>%
+  addMiniMap(position = "bottomleft")
+```
+
+# Separados por cluster
+```{r}
+library(htmltools)
+leaflet(data = ds) %>%
+  addTiles() %>%  
+  addMarkers(lng=~longitude, lat=~latitude,
+             clusterOptions = markerClusterOptions(),
+             popup = ~htmlEscape(county))
+```
+
+
+```{r}
+leaflet(data = ds) %>%
+  addTiles() %>%  
+  addMarkers(lng=~longitude, lat=~latitude,
+             clusterOptions = markerClusterOptions(),
+             popup = ~htmlEscape(county)) %>% 
+  addRectangles(lng1=-48.81455, lat1=-25.36165,
+               lng2=-47.92595, lat2=-25.60345,
+               fillColor = "transparent")
+```
+
+## Opção de providers
+```{r}
+leaflet(data = ds) %>%
+  addTiles(group = "OSM (default)") %>%
+  addProviderTiles(providers$Stamen.Toner, group = "Toner") %>%
+  addProviderTiles(providers$Stamen.TonerLite, group = "Toner Lite") %>%
+  addProviderTiles(providers$CartoDB.Positron, group = "Positron") %>%
+  addMarkers(lng=~longitude, lat=~latitude,
+             clusterOptions = markerClusterOptions(),
+             popup = ~htmlEscape(county)) %>% 
+  addLayersControl(
+    baseGroups = c("OSM (default)", "Toner", "Toner Lite","Positron"),
+    options = layersControlOptions(collapsed = FALSE)
+  )
+```
+
+
+```{r}
+library(sf)
+library(mapview)
+```
+
+## Pop up de cada ponto
+```{r}
+locations_sf <- st_as_sf(ds, coords = c("longitude", "latitude"), crs = 4326)
+mapview(locations_sf)
+```
+
+
+
+
+
+
+

@@ -1,0 +1,269 @@
+---
+title: "Análise de dados"
+output:
+  html_document:
+    theme: flatly
+    highlight: pygments
+    toc_depth: 5
+    # code_download: true
+    # code_folding: show
+    toc: true
+    toc_float:
+      collapsed: true
+    # df_print: kable
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, tidy = TRUE)
+```
+
+# PMAP de 2013 a 2019
+**BANCO DE DADOS DO MONITORAMENTO DA ATIVIDADE PESQUEIRA  
+Data da atualização: 04/03/2020**
+
+#### Leitura de dados
+###### Alterado "-" por *NA*.  
+```{r warning = F, message= F}
+library(readxl)
+library(gifski)
+library(kableExtra)
+library(plotly)
+library(DT)
+library(gganimate)
+df <- read_excel("dados_PMAP-2013-2019.xlsx",na = "-")
+```
+
+###### Arrumar os nomes, retirando todos os símbolos e acentos.
+###### Classe dos dados
+```{r warning = F, message = F}
+library(janitor)
+library(dplyr)
+library(DT)
+names(df) <- df %>% clean_names() %>% names
+
+datatable(head(df, 300), extensions = 'FixedHeader',
+          options = list(scrollX = TRUE),
+          caption = 'Table 1: Primeiras 300 linhas dos dados',
+          filter = "bottom",
+          rownames = F)
+```
+
+###### Transformar todas as variáveis *character* em *factor*
+```{r}
+df[sapply(df,is.character)] <- lapply(df[sapply(df,is.character)], as.factor)
+# Transformar ano como factor
+df$ano <- as.factor(df$ano)
+```
+
+# Entreposto
+
+**PLOTLY**
+```{r}
+ano.entreposto <- as.data.frame(table(df$ano,df$entreposto))
+library(plotly)
+fig <- plot_ly(ano.entreposto, x = ~Var1, y = ~Freq, color = ~Var2) %>% 
+  add_lines() %>%
+  layout(
+    title = "Série Temporal de frequência de Entrepostos",
+    xaxis = list(title="Ano"),
+    yaxis = list(title="Frequência"),
+    legend = list(title = list(text = "<b>Entrepostos</b>"))
+  )
+fig
+```
+
+**GGPLOT**
+```{r}
+ano.entreposto$Var1 <- as.numeric(levels(ano.entreposto$Var1))[ano.entreposto$Var1]
+p <- ggplot(ano.entreposto,aes(x=factor(Var1),
+                          y=Freq,
+                          colour=Var2,
+                          group=Var2)) + 
+  geom_line() + geom_point() +
+  xlab("Ano") + ylab("Frequência") + 
+  ggtitle("Série Temporal de Entrepostos")
+
+theme_set(theme_bw())
+p  + labs(color='Entreposto') 
+p  + transition_reveal(Var1)
+```
+
+# Tipo de Recurso
+**PLOTLY**
+```{r}
+ano.tipo_recurso <- as.data.frame(table(df$ano,df$tipo_de_recurso))
+plot_ly(ano.tipo_recurso, x = ~Var1, y = ~Freq, color = ~Var2) %>% 
+  add_lines() %>%
+  layout(
+    title = " Série Temporal de Tipo de Recurso",
+    xaxis = list(title="Ano"),
+    yaxis = list(title="Frequência"),
+    legend = list(title = list(text = "<b>Tipo de Recurso</b>"))
+  )
+
+```
+
+**GGPLOT**  
+
+```{r}
+p <- ggplot(ano.tipo_recurso,aes(x=Var1,
+                               y=Freq,
+                               colour=Var2,
+                               group=Var2)) + 
+  geom_line() + 
+  xlab("Ano") + ylab("Frequência") + 
+  ggtitle("Série Temporal de Tipo de Recurso")
+
+p  + labs(color='Tipo de Recurso')
+```
+
+
+```{r}
+ggplot(df, aes(ano)) +
+geom_bar(aes(fill=tipo_de_recurso), width = 0.5) + 
+  xlab("Ano") + ylab("Frequência") + 
+  ggtitle("Gráfico de barras Tipo de Recurso") + 
+  scale_fill_discrete(name = "Tipo de Recurso")
+```
+
+
+```{r}
+ano.quarter.entreposto <- as.data.frame(table(df$ano,quarters(df$data), df$entreposto))
+
+quarter <- ggplot(ano.quarter.entreposto,aes(x=interaction(Var2,Var1),
+                            y=Freq,
+                            colour=Var3,
+                            group=Var3)) + 
+  geom_line() + geom_point() + 
+  xlab("Trimestres entre anos") + ylab("Frequência") + 
+  ggtitle("Série Temporal de Entreposto")
+quarter + theme(axis.text.x = element_text(angle = 90)) + labs(color='Entreposto') 
+```
+
+# Entrepostos
+
+```{r warning = F, message = F}
+library(dygraphs)
+library(xts)
+x <- as.data.frame.matrix(table(df$data,df$entreposto))
+y <- cbind(as.Date(row.names(x)),x)
+z <- xts(y, order.by = y$`as.Date(row.names(x))`)
+dygraph(z) %>% dyRangeSelector()
+dygraph(z, group =  "Mercado de Antonina")
+```
+
+#### Resumo Geral
+
+```{r}
+summary(df)
+```
+
+#### Preco_r médio de cada nome_popular
+```{r}
+df %>%
+  group_by(nome_popular) %>%
+  summarise(
+    media_preco = round(mean(preco_r),1),
+    media_rendimento = round(mean(rendimento_r),1),
+    freq_ab = n()) %>%
+  mutate(freq = round(100 * freq_ab/sum(freq_ab), 3)) %>%  
+  arrange(desc(freq)) %>% 
+  adorn_totals("row") %>%
+  kable() %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "responsive"), 
+                full_width = F,
+                position = "left") %>% 
+  scroll_box(width = "100%", height = "300px")
+```
+
+
+#### Origem embarcação x Entreposto
+
+```{r}
+table(df$origem_da_embarcacao, df$entreposto) %>%  kable() %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "responsive","condensed"), 
+                full_width = F,
+                position = "left") %>% 
+  scroll_box(width = "100%", height = "300px")
+
+```
+
+
+#### Tabela de duas entradas ano x mês
+```{r}
+anoXMes <- as.data.frame.matrix(table(df$ano, df$mes))
+anoXMes <- anoXMes[c('Janeiro', "Fevereiro","Marco","Abril","Maio","Junho","Julho","Agosto",
+          "Setembro","Outubro","Novembro","Dezembro")]
+datatable(anoXMes, extensions = 'Buttons',
+          options = list(scrollX = TRUE,
+                         dom = 'Bfrtip',
+                         buttons = c('copy', 'csv', 'excel', 'pdf', 'print')))
+
+```
+
+
+##### Entreposto
+
+#### Agrupar por entreposto
+```{r}
+df %>%
+  group_by(entreposto) %>%
+  summarise(
+    media_preco = mean(preco_r),
+    media_rendimento = mean(rendimento_r),
+    freq_ab = n()) %>%
+  mutate(freq = paste0(round(100 * freq_ab/sum(freq_ab), 1), "%")) %>%  
+  kable() %>% 
+  kable_styling(bootstrap_options = c("striped", "hover", "responsive"), 
+                full_width = F,
+                position = "left")
+```
+
+#### Duração de horas
+
+```{r}
+tabela.horas <- as.data.frame(table(df$duracao_h))
+plot_ly(
+  tabela.horas,
+  labels = ~ Var1,
+  values = ~ Freq,
+  type = 'pie',
+  textinfo = "none"
+)
+
+ggplot(df, aes(x=ano, y=duracao_h, fill = ano)) + 
+  geom_boxplot() + xlab("Ano") + ylab("Duração de horas") + 
+  ggtitle("Boxplots de Duração de Horas vs Ano ")
+```
+
+#### Familia
+
+```{r warning = F, message = F}
+library(ggpubr)
+tb <- table(df$familia) %>% as.data.frame
+ggplot(tb, aes(x = reorder(Var1, Freq), y = Freq, fill = Freq)) +
+  geom_col()  +
+  rotate_x_text(angle = 45) + 
+  xlab("Família") + ylab("Frequência") + 
+  ggtitle("Gráfico de Barra de Família") + 
+  labs(fill = "Frequência")
+```
+
+```{r}
+library(gganimate)
+tab <- df
+tab$ano <- as.numeric(levels(df$ano))[df$ano]
+p <- ggplot(tab, aes(x = preco_r, y = rendimento_r, color = entreposto)) +
+  geom_point() +
+  transition_states(ano,
+                    transition_length = 2,
+                    state_length = 1) +
+  ease_aes('cubic-in-out') +
+  ggtitle('Now showing {closest_state}',
+          subtitle = 'Frame {frame} of {nframes}')
+p
+```
+
+
+
+

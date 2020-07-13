@@ -1,5 +1,16 @@
 ---
-  title: "My Website"
+title: "Undergraduate Research"
+output:
+  html_document:
+    code_folding: show
+    toc_depth: 2
 ---
-  
-Hello, Website! Welcome to the world.
+
+***
+
+#### Hi, I'm Gian, I'm an undergraduate student at UFPR. This is my research page on the estuarine system on Paraná's coast of Brazil. The data was collected by the laboratory LAGEAMB.
+***
+
+#### More info about me [here](https://gianlima.github.io/).
+
+

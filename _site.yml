@@ -1,14 +1,21 @@
 name: "Gian Lima"
 output_dir: "docs"
-navbar:
-  title: "Gian Lima"
-  left:
-    - text: "Home"
-      href: https://gianlima.github.io/
-    - text: "Regressão"
-      menu:
-      - text: "Regressão Linear Simples"
 output:
   html_document:
     theme: flatly
     highlight: pygments
+navbar:
+  title: "Gian Lima"
+  left:
+    - text: "Home"
+      href: index.html
+    - text: "Análise"
+      href: analise_dados.html
+    - text: "Mapas"
+      href: mapas.html
+    - text: "Shiny"
+      href: http://rstudio.leg.ufpr.br/
+  right:
+    - text: GitHub
+      icon: fa-github fa-lg
+      href: https://github.com/gianlima/ic

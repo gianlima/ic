@@ -11,7 +11,7 @@
 
 
 
-<title>My Website</title>
+<title>Undergraduate Research</title>
 
 <script src="site_libs/header-attrs-2.3/header-attrs.js"></script>
 <script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
@@ -21,7 +21,10 @@
 <script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
 <script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
 <script src="site_libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
 
 
@@ -230,6 +233,9 @@ $(document).ready(function () {
 </style>
 
 <!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
 
 
 
@@ -257,21 +263,26 @@ $(document).ready(function () {
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="https://gianlima.github.io/">Home</a>
+  <a href="index.html">Home</a>
 </li>
-<li class="dropdown">
-  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
-    Regressão
-     
-    <span class="caret"></span>
-  </a>
-  <ul class="dropdown-menu" role="menu">
-    <li class="dropdown-header">Regressão Linear Simples</li>
-  </ul>
+<li>
+  <a href="analise_dados.html">Análise</a>
+</li>
+<li>
+  <a href="mapas.html">Mapas</a>
+</li>
+<li>
+  <a href="http://rstudio.leg.ufpr.br/">Shiny</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
-        
+        <li>
+  <a href="https://github.com/gianlima/ic">
+    <span class="fa fa-github fa-lg"></span>
+     
+    GitHub
+  </a>
+</li>
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
@@ -279,14 +290,29 @@ $(document).ready(function () {
 
 <div class="fluid-row" id="header">
 
+<div class="btn-group pull-right">
+<button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+</ul>
+</div>
 
 
-<h1 class="title toc-ignore">My Website</h1>
+
+<h1 class="title toc-ignore">Undergraduate Research</h1>
 
 </div>
 
 
-<p>Hello, Website! Welcome to the world.</p>
+<hr />
+<div id="hi-im-gian-im-an-undergraduate-student-at-ufpr.-this-is-my-research-page-on-the-estuarine-system-on-paranás-coast-of-brazil.-the-data-was-collected-by-the-laboratory-lageamb." class="section level4">
+<h4>Hi, I’m Gian, I’m an undergraduate student at UFPR. This is my research page on the estuarine system on Paraná’s coast of Brazil. The data was collected by the laboratory LAGEAMB.</h4>
+<hr />
+</div>
+<div id="more-info-about-me-here." class="section level4">
+<h4>More info about me <a href="https://gianlima.github.io/">here</a>.</h4>
+</div>
 
 
 
@@ -321,6 +347,11 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
 
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
