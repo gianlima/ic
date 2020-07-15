@@ -12,7 +12,13 @@ navbar:
     - text: "Análise"
       href: analise_dados.html
     - text: "Mapas"
-      href: mapas.html
+      menu:
+      - text: "Básicos"
+        href: mapas.html
+      - text: "Geobr"
+        href: mapasv2.html
+      - text: "União"
+        href: mapasv3.html
     - text: "Shiny"
       href: http://rstudio.leg.ufpr.br/
   right:

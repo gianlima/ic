@@ -1,0 +1,696 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Mapas com o pacote geobr</title>
+
+<script src="site_libs/header-attrs-2.3/header-attrs.js"></script>
+<script src="site_libs/jquery-1.11.3/jquery.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/accessible-code-block-0.0.1/empty-anchor.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+<style type="text/css">
+  pre:not([class]) {
+    background-color: white;
+  }
+</style>
+
+
+<style type="text/css">
+h1 {
+  font-size: 34px;
+}
+h1.title {
+  font-size: 38px;
+}
+h2 {
+  font-size: 30px;
+}
+h3 {
+  font-size: 24px;
+}
+h4 {
+  font-size: 18px;
+}
+h5 {
+  font-size: 16px;
+}
+h6 {
+  font-size: 12px;
+}
+.table th:not([align]) {
+  text-align: left;
+}
+</style>
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+code {
+  color: inherit;
+  background-color: rgba(0, 0, 0, 0.04);
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+</style>
+
+
+<style type="text/css">
+/* padding for bootstrap navbar */
+body {
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+/* offset scroll position for anchor links (for fixed navbar)  */
+.section h1 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h2 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h3 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h4 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h5 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.section h6 {
+  padding-top: 65px;
+  margin-top: -65px;
+}
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #ffffff;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script>
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.parent().addClass('active');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row-fluid">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">Gian Lima</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">Home</a>
+</li>
+<li>
+  <a href="analise_dados.html">Análise</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
+    Mapas
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="mapas.html">Básicos</a>
+    </li>
+    <li>
+      <a href="mapasv2.html">Geobr</a>
+    </li>
+    <li>
+      <a href="mapasv3.html">União</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="http://rstudio.leg.ufpr.br/">Shiny</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/gianlima/ic">
+    <span class="fa fa-github fa-lg"></span>
+     
+    GitHub
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div class="fluid-row" id="header">
+
+
+
+<h1 class="title toc-ignore">Mapas com o pacote geobr</h1>
+
+</div>
+
+
+<div id="pacotes-utilizados" class="section level3">
+<h3>Pacotes utilizados</h3>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1"></a><span class="kw">library</span>(mapview)</span>
+<span id="cb1-2"><a href="#cb1-2"></a><span class="kw">library</span>(leafem)</span>
+<span id="cb1-3"><a href="#cb1-3"></a><span class="kw">library</span>(readxl)</span>
+<span id="cb1-4"><a href="#cb1-4"></a><span class="kw">library</span>(leaflet)</span>
+<span id="cb1-5"><a href="#cb1-5"></a><span class="kw">library</span>(janitor)</span>
+<span id="cb1-6"><a href="#cb1-6"></a><span class="kw">library</span>(geobr)</span>
+<span id="cb1-7"><a href="#cb1-7"></a><span class="kw">library</span>(ggplot2)</span>
+<span id="cb1-8"><a href="#cb1-8"></a><span class="kw">library</span>(dplyr)</span></code></pre></div>
+<div id="obtenção-dos-dados" class="section level4">
+<h4>Obtenção dos dados</h4>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1"></a>ds &lt;-<span class="st"> </span><span class="kw">read_excel</span>(<span class="st">&quot;Macrofauna_CEP_indices.xlsx&quot;</span>,<span class="dt">na =</span> <span class="st">&quot;-&quot;</span>)</span>
+<span id="cb2-2"><a href="#cb2-2"></a><span class="kw">names</span>(ds) &lt;-<span class="st"> </span>ds <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">clean_names</span>() <span class="op">%&gt;%</span><span class="st"> </span>names</span></code></pre></div>
+</div>
+<div id="obtenção-de-posições-geográficos-do-paraná" class="section level4">
+<h4>Obtenção de posições geográficos do Paraná</h4>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1"></a><span class="co"># Todos os municipios do PR</span></span>
+<span id="cb3-2"><a href="#cb3-2"></a><span class="kw">library</span>(geobr)</span>
+<span id="cb3-3"><a href="#cb3-3"></a><span class="co"># Objeto de classe sf</span></span>
+<span id="cb3-4"><a href="#cb3-4"></a>all_muni &lt;-<span class="st"> </span><span class="kw">read_municipality</span>(<span class="dt">code_muni =</span> <span class="st">&quot;PR&quot;</span>, <span class="dt">year=</span> <span class="dv">2018</span>)</span></code></pre></div>
+</div>
+<div id="mapa-de-todo-o-pr" class="section level4">
+<h4>Mapa de todo o PR</h4>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1"></a><span class="kw">ggplot</span>() <span class="op">+</span></span>
+<span id="cb4-2"><a href="#cb4-2"></a><span class="st">  </span><span class="kw">geom_sf</span>(<span class="dt">data=</span>all_muni, <span class="dt">fill=</span><span class="st">&quot;#2D3E50&quot;</span>, <span class="dt">color=</span><span class="st">&quot;#FEBF57&quot;</span>, <span class="dt">size=</span>.<span class="dv">15</span>, <span class="dt">show.legend =</span> <span class="ot">FALSE</span>) <span class="op">+</span></span>
+<span id="cb4-3"><a href="#cb4-3"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">subtitle=</span><span class="st">&quot;Municípios do Paraná, 2018&quot;</span>, <span class="dt">size=</span><span class="dv">8</span>) <span class="op">+</span></span>
+<span id="cb4-4"><a href="#cb4-4"></a><span class="st">  </span><span class="kw">theme_minimal</span>()</span></code></pre></div>
+<p><img src="mapasv2_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+</div>
+<div id="arrumando-os-nomes-dos-municipios" class="section level4">
+<h4>Arrumando os nomes dos municipios</h4>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1"></a>muni &lt;-<span class="st"> </span>all_muni[all_muni<span class="op">$</span>name_muni <span class="op">%in%</span><span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;Paranaguá&quot;</span>,</span>
+<span id="cb5-2"><a href="#cb5-2"></a>                                           <span class="st">&quot;Antonina&quot;</span>,</span>
+<span id="cb5-3"><a href="#cb5-3"></a>                                           <span class="st">&quot;Pontal Do Paraná&quot;</span>),]</span></code></pre></div>
+</div>
+<div id="mapa-de-coordenadas-por-ano-e-local-coletado" class="section level4">
+<h4>Mapa de coordenadas por ano e local coletado</h4>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1"></a><span class="kw">ggplot</span>() <span class="op">+</span></span>
+<span id="cb6-2"><a href="#cb6-2"></a><span class="st">  </span><span class="kw">geom_sf</span>(<span class="dt">data=</span>muni, <span class="dt">fill=</span><span class="st">&quot;#2D3E50&quot;</span>, <span class="dt">color=</span><span class="st">&quot;#FEBF57&quot;</span>, <span class="dt">size=</span>.<span class="dv">15</span>, <span class="dt">show.legend =</span> <span class="ot">FALSE</span>) <span class="op">+</span></span>
+<span id="cb6-3"><a href="#cb6-3"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">subtitle=</span><span class="st">&quot;Paranaguá, Antonina e Pontal do Paraná&quot;</span>, <span class="dt">size=</span><span class="dv">8</span>) <span class="op">+</span></span>
+<span id="cb6-4"><a href="#cb6-4"></a><span class="st">  </span><span class="kw">theme_minimal</span>() <span class="op">+</span></span>
+<span id="cb6-5"><a href="#cb6-5"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> ds, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> longitude, <span class="dt">y =</span> latitude, </span>
+<span id="cb6-6"><a href="#cb6-6"></a>                                      <span class="dt">color =</span> <span class="kw">factor</span>(county),</span>
+<span id="cb6-7"><a href="#cb6-7"></a>                                      <span class="dt">shape =</span> <span class="kw">factor</span>(year_collected))) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb6-8"><a href="#cb6-8"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;Longitude&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb6-9"><a href="#cb6-9"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Latitude&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb6-10"><a href="#cb6-10"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">color =</span> <span class="st">&quot;Local&quot;</span> ) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb6-11"><a href="#cb6-11"></a><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Mapa de coordenadas por ano e local coletado&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb6-12"><a href="#cb6-12"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;right&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb6-13"><a href="#cb6-13"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">shape=</span><span class="st">&#39;Ano&#39;</span>) </span></code></pre></div>
+<p><img src="mapasv2_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+</div>
+<div id="microrregião-de-paranaguá" class="section level4">
+<h4>Microrregião de paranaguá</h4>
+<div id="dados" class="section level5">
+<h5>1. Dados</h5>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1"></a>micro &lt;-<span class="st"> </span><span class="kw">read_micro_region</span>(<span class="dt">code_micro=</span><span class="st">&quot;PR&quot;</span>, <span class="dt">year=</span><span class="dv">2018</span>)</span></code></pre></div>
+</div>
+<div id="gráfico" class="section level5">
+<h5>2. Gráfico</h5>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1"></a><span class="kw">ggplot</span>() <span class="op">+</span><span class="st"> </span><span class="kw">geom_sf</span>(<span class="dt">data=</span>micro[<span class="dv">14</span>,], <span class="dt">fill=</span><span class="st">&quot;#2D3E50&quot;</span>, <span class="dt">color=</span><span class="st">&quot;#FEBF57&quot;</span>, <span class="dt">size=</span>.<span class="dv">15</span>, <span class="dt">show.legend =</span> <span class="ot">FALSE</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb8-2"><a href="#cb8-2"></a><span class="st">  </span><span class="kw">theme_minimal</span>() <span class="op">+</span></span>
+<span id="cb8-3"><a href="#cb8-3"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">subtitle=</span><span class="st">&quot;Microrregião de Paranaguá&quot;</span>, <span class="dt">size=</span><span class="dv">8</span>) <span class="op">+</span></span>
+<span id="cb8-4"><a href="#cb8-4"></a><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">data =</span> ds, <span class="dt">mapping =</span> <span class="kw">aes</span>(<span class="dt">x =</span> longitude, <span class="dt">y =</span> latitude, </span>
+<span id="cb8-5"><a href="#cb8-5"></a>                                      <span class="dt">color =</span> <span class="kw">factor</span>(county))) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb8-6"><a href="#cb8-6"></a><span class="st">  </span><span class="kw">xlab</span>(<span class="st">&quot;Longitude&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb8-7"><a href="#cb8-7"></a><span class="st">  </span><span class="kw">ylab</span>(<span class="st">&quot;Latitude&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb8-8"><a href="#cb8-8"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">color =</span> <span class="st">&quot;Local&quot;</span> ) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb8-9"><a href="#cb8-9"></a><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Mapa de coordenadas por local&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb8-10"><a href="#cb8-10"></a><span class="st">  </span><span class="kw">theme</span>(<span class="dt">legend.position=</span><span class="st">&quot;right&quot;</span>) <span class="op">+</span><span class="st"> </span></span>
+<span id="cb8-11"><a href="#cb8-11"></a><span class="st">  </span><span class="kw">labs</span>(<span class="dt">shape=</span><span class="st">&#39;Ano&#39;</span>) </span></code></pre></div>
+<p><img src="mapasv2_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1"></a><span class="kw">sessionInfo</span>()</span></code></pre></div>
+<pre><code>## R version 4.0.2 (2020-06-22)
+## Platform: x86_64-w64-mingw32/x64 (64-bit)
+## Running under: Windows 10 x64 (build 18362)
+## 
+## Matrix products: default
+## 
+## locale:
+## [1] LC_COLLATE=Portuguese_Brazil.1252  LC_CTYPE=Portuguese_Brazil.1252   
+## [3] LC_MONETARY=Portuguese_Brazil.1252 LC_NUMERIC=C                      
+## [5] LC_TIME=Portuguese_Brazil.1252    
+## 
+## attached base packages:
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## 
+## other attached packages:
+##  [1] leafpop_0.0.5        leaflet.extras_1.0.0 rio_0.5.16          
+##  [4] geobr_1.3            leafem_0.1.1         mapview_2.7.8       
+##  [7] htmltools_0.5.0      leaflet_2.0.3        ggmap_3.0.0         
+## [10] spData_0.3.8         raster_3.3-7         sp_1.4-2            
+## [13] sf_0.9-4             ggpubr_0.4.0         xts_0.12-0          
+## [16] zoo_1.8-8            dygraphs_1.1.1.6     dplyr_1.0.0         
+## [19] janitor_2.0.1        gganimate_1.0.6      DT_0.14             
+## [22] plotly_4.9.2.1       ggplot2_3.3.2        kableExtra_1.1.0    
+## [25] gifski_0.8.6         readxl_1.3.1        
+## 
+## loaded via a namespace (and not attached):
+##  [1] colorspace_1.4-1        ggsignif_0.6.0          rjson_0.2.20           
+##  [4] ellipsis_0.3.1          class_7.3-17            snakecase_0.11.0       
+##  [7] satellite_1.0.2         markdown_1.1            base64enc_0.1-3        
+## [10] rstudioapi_0.11         farver_2.0.3            fansi_0.4.1            
+## [13] lubridate_1.7.9         xml2_1.3.2              codetools_0.2-16       
+## [16] knitr_1.29              jsonlite_1.7.0          broom_0.7.0            
+## [19] png_0.1-7               readr_1.3.1             compiler_4.0.2         
+## [22] httr_1.4.1              backports_1.1.7         assertthat_0.2.1       
+## [25] lazyeval_0.2.2          cli_2.0.2               tweenr_1.0.1           
+## [28] leaflet.providers_1.9.0 prettyunits_1.1.1       tools_4.0.2            
+## [31] gtable_0.3.0            glue_1.4.1              Rcpp_1.0.5             
+## [34] carData_3.0-4           cellranger_1.1.0        vctrs_0.3.1            
+## [37] svglite_1.2.3.2         crosstalk_1.1.0.1       xfun_0.15              
+## [40] stringr_1.4.0           openxlsx_4.1.5          rvest_0.3.5            
+## [43] mime_0.9                lifecycle_0.2.0         rstatix_0.6.0          
+## [46] scales_1.1.1            hms_0.5.3               RColorBrewer_1.1-2     
+## [49] yaml_2.2.1              curl_4.3                gdtools_0.2.2          
+## [52] stringi_1.4.6           highr_0.8               e1071_1.7-3            
+## [55] zip_2.0.4               RgoogleMaps_1.4.5.3     rlang_0.4.6            
+## [58] pkgconfig_2.0.3         systemfonts_0.2.3       bitops_1.0-6           
+## [61] evaluate_0.14           lattice_0.20-41         purrr_0.3.4            
+## [64] htmlwidgets_1.5.1       labeling_0.3            tidyselect_1.1.0       
+## [67] plyr_1.8.6              magrittr_1.5            R6_2.4.1               
+## [70] generics_0.0.2          knitrBootstrap_1.0.2    DBI_1.1.0              
+## [73] pillar_1.4.6            haven_2.3.1             foreign_0.8-80         
+## [76] withr_2.2.0             units_0.6-7             abind_1.4-5            
+## [79] tibble_3.0.2            crayon_1.3.4            car_3.0-8              
+## [82] uuid_0.1-4              KernSmooth_2.23-17      rmarkdown_2.3          
+## [85] jpeg_0.1-8.1            progress_1.2.2          grid_4.0.2             
+## [88] data.table_1.12.8       forcats_0.5.0           digest_0.6.25          
+## [91] classInt_0.4-3          webshot_0.5.2           tidyr_1.1.0            
+## [94] brew_1.0-6              stats4_4.0.2            munsell_0.5.0          
+## [97] viridisLite_0.3.0</code></pre>
+</div>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4,h5",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

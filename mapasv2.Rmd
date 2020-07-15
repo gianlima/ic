@@ -1,0 +1,104 @@
+---
+title: "Mapas com o pacote geobr"
+output:
+  html_document:
+    theme: flatly
+    highlight: pygments
+    toc_depth: 5
+    toc: true
+    toc_float:
+      collapsed: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE,
+                      message = FALSE,
+                      warning = FALSE)
+```
+
+### Pacotes utilizados
+```{r}
+library(mapview)
+library(leafem)
+library(readxl)
+library(leaflet)
+library(janitor)
+library(geobr)
+library(ggplot2)
+library(dplyr)
+```
+
+#### Obtenção dos dados
+```{r}
+ds <- read_excel("Macrofauna_CEP_indices.xlsx",na = "-")
+names(ds) <- ds %>% clean_names() %>% names
+```
+
+#### Obtenção de posições geográficos do Paraná
+```{r results = "hide"}
+# Todos os municipios do PR
+library(geobr)
+# Objeto de classe sf
+all_muni <- read_municipality(code_muni = "PR", year= 2018)
+```
+
+#### Mapa de todo o PR
+```{r}
+ggplot() +
+  geom_sf(data=all_muni, fill="#2D3E50", color="#FEBF57", size=.15, show.legend = FALSE) +
+  labs(subtitle="Municípios do Paraná, 2018", size=8) +
+  theme_minimal()
+```
+
+#### Arrumando os nomes dos municipios
+```{r}
+muni <- all_muni[all_muni$name_muni %in% c("Paranaguá",
+                                           "Antonina",
+                                           "Pontal Do Paraná"),]
+```
+
+#### Mapa de coordenadas por ano  e local coletado
+```{r}
+ggplot() +
+  geom_sf(data=muni, fill="#2D3E50", color="#FEBF57", size=.15, show.legend = FALSE) +
+  labs(subtitle="Paranaguá, Antonina e Pontal do Paraná", size=8) +
+  theme_minimal() +
+  geom_point(data = ds, mapping = aes(x = longitude, y = latitude, 
+                                      color = factor(county),
+                                      shape = factor(year_collected))) + 
+  xlab("Longitude") + 
+  ylab("Latitude") + 
+  labs(color = "Local" ) + 
+  ggtitle("Mapa de coordenadas por ano e local coletado") + 
+  theme(legend.position="right") + 
+  labs(shape='Ano') 
+```
+
+#### Microrregião de paranaguá
+
+##### 1. Dados
+```{r results = "hide"}
+micro <- read_micro_region(code_micro="PR", year=2018)
+```
+
+##### 2. Gráfico
+```{r}
+ggplot() + geom_sf(data=micro[14,], fill="#2D3E50", color="#FEBF57", size=.15, show.legend = FALSE) + 
+  theme_minimal() +
+  labs(subtitle="Microrregião de Paranaguá", size=8) +
+  geom_point(data = ds, mapping = aes(x = longitude, y = latitude, 
+                                      color = factor(county))) + 
+  xlab("Longitude") + 
+  ylab("Latitude") + 
+  labs(color = "Local" ) + 
+  ggtitle("Mapa de coordenadas por local") + 
+  theme(legend.position="right") + 
+  labs(shape='Ano') 
+```
+
+```{r}
+sessionInfo()
+```
+
+
+

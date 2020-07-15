@@ -1,0 +1,107 @@
+---
+title: "Todos num só"
+output:
+  html_document:
+    theme: flatly
+    highlight: pygments
+    toc_depth: 5
+    toc: true
+    toc_float:
+      collapsed: false
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = F, warning = F)
+```
+
+### Pacotes utilizados
+```{r}
+library(sf)
+library(mapview)
+library(leafem)
+library(readxl)
+library(janitor)
+library(leaflet)
+library(leaflet.extras)
+library(leafpop)
+library(geobr)
+```
+
+### Obtenção dos dados 1
+```{r}
+ds <- read_excel("Macrofauna_CEP_indices.xlsx",na = "-")
+names(ds) <- ds %>% clean_names() %>% names
+```
+
+### Obtenção de dados 2
+```{r results = "hide"}
+all_muni <- read_municipality(code_muni = "PR", year= 2018)
+muni <- all_muni[all_muni$name_muni %in% c("Paranaguá",
+                                           "Antonina",
+                                           "Pontal Do Paraná"),]
+```
+
+### Adicionado separação entre cidades
+```{r}
+paranagua <- ds[ds$county %in% "Paranagua",]
+pontal <- ds[ds$county %in% "Pontal do Parana",]
+antonina <- ds[ds$county %in% "Antonina",]
+
+pal <-  colorNumeric("RdYlBu", domain = ds$year_collected)
+leaflet(data = ds) %>%
+  addTiles() %>%
+  addPolygons(data = muni,
+              popup = ~ name_muni,
+              color = "black",
+              fillColor = "#C39BD3",
+              fillOpacity = 0.5,
+              weight = 1) %>%
+  addCircleMarkers(data = paranagua,
+             lng=~longitude, lat=~latitude,
+             clusterOptions = markerClusterOptions(),
+             popup = leafpop::popupTable(paranagua),
+             radius = 7,
+             stroke = F,
+             col = ~pal(year_collected),
+             fillOpacity = 1,
+             group = "Paranagua") %>% 
+  addCircleMarkers(data = pontal,
+             lng=~longitude, lat=~latitude,
+             clusterOptions = markerClusterOptions(),
+             popup = leafpop::popupTable(pontal),
+             radius = 7,
+             stroke = F,
+             col = ~pal(year_collected),
+             fillOpacity = 1,
+             group = "Pontal") %>% 
+  addCircleMarkers(data = antonina,
+             lng=~longitude, lat=~latitude,
+             clusterOptions = markerClusterOptions(),
+             popup = leafpop::popupTable(antonina),
+             radius = 7,
+             stroke = F,
+             col = ~pal(year_collected),
+             fillOpacity = 1,
+             group = "Antonina") %>% 
+  leaflet.extras::addResetMapButton() %>% 
+  addLegend(pal = pal, 
+            values = ~year_collected,
+            title = "Ano",
+            position = "bottomright") %>% 
+  leaflet::addLayersControl(overlayGroups = c("Paranagua","Pontal","Antonina"), 
+                            options = layersControlOptions(collapsed = FALSE)) %>% 
+  addMiniMap(position = "bottomleft",
+             width = 100, height = 100)
+```
+
+
+
+
+
+
+
+
+
+
+
+
